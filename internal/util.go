@@ -17,7 +17,7 @@ import (
 // "%%<name> <type>[,<option>,...]%%", replacing them with the supplied mask.
 // mask can contain "%d" to indicate current position. The modified query is
 // returned, and the slice of extracted QueryParam's.
-func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []*QueryParam) {
+func (a *ArgType) ParseQuery(mask string, interpol bool, inspect bool) (string, []*QueryParam) {
 	dl := a.QueryParamDelimiter
 
 	// create the regexp for the delimiter
@@ -78,7 +78,19 @@ func (a *ArgType) ParseQuery(mask string, interpol bool) (string, []*QueryParam)
 			}
 			str = str + "` + " + xstr + " + `"
 		} else {
-			str = str + pstr
+			ps := pstr
+			if inspect {
+				switch strings.ToLower(param.Type) {
+				case "int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64":
+					ps = "0"
+				case "float32", "float64":
+					ps = "0.0"
+				default:
+					ps = "NULL"
+				}
+			}
+
+			str = str + ps
 		}
 
 		params = append(params, param)

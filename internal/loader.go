@@ -113,8 +113,8 @@ func (tl TypeLoader) ParseQuery(args *ArgType) error {
 	var err error
 
 	// parse supplied query
-	queryStr, params := args.ParseQuery(tl.Mask(), true)
-	inspectStr, _ := args.ParseQuery("NULL", false)
+	queryStr, params := args.ParseQuery(tl.Mask(), true, false)
+	inspectStr, _ := args.ParseQuery("NULL", false, true)
 
 	// split up query and inspect based on lines
 	query := strings.Split(queryStr, "\n")
